@@ -1,56 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "pacman.h"
+#include "map.h"
 
-struct map map;
+MAP map;
  
 int main(){
-    read_map();
+    read_map(&map);
     do{
-        print_map();
+        print_map(&map);
         char command;
         scanf(" %c", &command);
         move(command);
     }while(!game_is_over());
     
-    free_map();
-}
-
-void read_map(){
-    FILE* file;
-    file = fopen("map.txt", "r");//"r" means "read"
-    if(file == 0){
-        printf("Game map not found.\n");
-        exit(1);
-    }
-
-    fscanf(file, "%d %d", &(map.lines), &(map.columns));
-    allocate_map();
-
-    for(int i = 0; i < map.lines; i++){
-        fscanf(file, "%s", map.matrix[i]);
-    }
-    fclose(file); 
-}
-
-void allocate_map(){
-    map.matrix = malloc(sizeof(char*) * map.lines);
-    for(int i = 0; i < map.lines; i++){
-        map.matrix[i] = malloc(sizeof(char) * (map.columns + 1));
-    }
-}
-
-void free_map(){
-    for(int i = 0; i < map.lines; i++){
-        free(map.matrix[i]);
-    }
-    free(map.matrix);
-}
-
-void print_map(){
-    for(int i = 0; i < map.lines; i++){
-        printf("%s\n", map.matrix[i]);
-    }
+    free_map(&map);
 }
 
 int game_is_over(){

@@ -4,9 +4,12 @@
 #include "map.h"
 
 MAP map;
- 
+POSITION position;
+
 int main(){
     read_map(&map);
+    find_character_in_map(&map, &position, '@');
+
     do{
         print_map(&map);
         char command;
@@ -22,35 +25,24 @@ int game_is_over(){
 }
 
 void move(char command){
-    int line;
-    int column;
+    map.matrix[position.line][position.column] = '.';
 
-    find_character(&line, &column);
     switch(command){
         case 'w': //UP
-            map.matrix[line - 1][column] = '@';
+            map.matrix[position.line - 1][position.column] = '@';
+            position.line--;
             break;
         case 'a': //LEFT
-            map.matrix[line][column - 1] = '@';
+            map.matrix[position.line][position.column - 1] = '@';
+            position.column--;
             break;
         case 's': //DOWN
-            map.matrix[line + 1][column] = '@';
+            map.matrix[position.line + 1][position.column] = '@';
+            position.line++;
             break;
         case 'd': //RIGHT
-            map.matrix[line][column + 1] = '@';
+            map.matrix[position.line][position.column + 1] = '@';
+            position.column++;
             break;
-    }
-
-    map.matrix[line][column] = '.';
-}
-
-void find_character(int* x, int* y){
-    for(int line = 0; line < map.lines; line++){
-        for(int column = 0; column < map.columns; column++){
-            if(map.matrix[line][column] == '@'){
-                (*x) = line;
-                (*y) = column;
-            }
-        }
     }
 }

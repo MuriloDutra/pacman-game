@@ -38,3 +38,14 @@ void print_map(MAP* map){
         printf("%s\n", map->matrix[i]);
     }
 }
+
+void find_character_in_map(MAP* map, POSITION* position, char letter){
+    for(int line = 0; line < map->lines; line++){
+        for(int column = 0; column < map->columns; column++){
+            if(map->matrix[line][column] == letter){
+                position->line = line;
+                position->column = column;
+            }
+        }
+    }
+}

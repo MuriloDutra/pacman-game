@@ -25,8 +25,11 @@ int game_is_over(){
 }
 
 void move(char command){
-    map.matrix[position.line][position.column] = '.';
+    int invalidCommand = (command != 'w' && command != 'a' && command != 's' && command != 'd');
+    if(invalidCommand)
+        return;
 
+    map.matrix[position.line][position.column] = '.';
     switch(command){
         case 'w': //UP
             map.matrix[position.line - 1][position.column] = '@';

@@ -2,6 +2,22 @@
 #include <stdlib.h>
 #include "map.h"
 
+void move_in_the_map(MAP* map, int origin_line, int origin_column, int next_line, int next_column){
+    char character = map->matrix[origin_line][origin_column];
+    map->matrix[next_line][next_column] = character;
+    map->matrix[origin_line][origin_column] = EMPTY;
+}
+
+int next_position_is_valid(MAP* map, int line, int column){
+    if(line >= map->lines)
+        return 0;
+    if(column >= map->columns)
+        return 0;
+    if(map->matrix[line][column] != EMPTY)
+        return 0;
+    return 1;
+}
+
 void read_map(MAP* map){
     FILE* file;
     file = fopen("map.txt", "r");//"r" means "read"
@@ -39,10 +55,10 @@ void print_map(MAP* map){
     }
 }
 
-void find_character_in_map(MAP* map, POSITION* position, char letter){
+void find_character_in_map(MAP* map, POSITION* position){
     for(int line = 0; line < map->lines; line++){
         for(int column = 0; column < map->columns; column++){
-            if(map->matrix[line][column] == letter){
+            if(map->matrix[line][column] == HERO){
                 position->line = line;
                 position->column = column;
             }

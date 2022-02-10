@@ -1,3 +1,8 @@
+#define HERO '@'
+#define EMPTY '.'
+#define VERTICAL_WALL '|'
+#define HORIZONTAL_WALL '-'
+
 struct map{
     char** matrix;
     int lines;
@@ -15,4 +20,6 @@ void free_map(MAP* map);
 void read_map(MAP* map);
 void allocate_map(MAP* map); 
 void print_map(MAP* map);
-void find_character_in_map(MAP* map, POSITION* position, char letter);
+void find_character_in_map(MAP* map, POSITION* position);
+int next_position_is_valid(MAP* map, int line, int column);
+void move_in_the_map(MAP* map, int origin_line, int origin_column, int next_line, int next_column);

@@ -8,7 +8,7 @@ POSITION position;
 
 int main(){
     read_map(&map);
-    find_character_in_map(&map, &position, '@');
+    find_character_in_map(&map, &position);
 
     do{
         print_map(&map);
@@ -25,7 +25,7 @@ int game_is_over(){
 }
 
 int is_a_valid_command(char command){
-    return (command == 'w' || command == 'a' || command == 's' || command == 'd');
+    return (command == UP || command == LEFT || command == DOWN || command == RIGHT);
 }
 
 void move(char command){
@@ -36,28 +36,24 @@ void move(char command){
     int next_column = position.column;
 
     switch(command){
-        case 'w': //UP
+        case UP:
             next_line--;
             break;
-        case 'a': //LEFT
+        case LEFT:
             next_column--;
             break;
-        case 's': //DOWN
+        case DOWN:
             next_line++;
             break;
-        case 'd': //RIGHT
+        case RIGHT:
             next_column++;
             break;
     }
-    if(next_line >= map.lines)
-        return;
-    if(next_column >= map.columns)
-        return;
-    if(map.matrix[next_line][next_column] != '.')
+    
+    if(!next_position_is_valid(&map, next_line, next_column))
         return;
     
-    map.matrix[next_line][next_column] = '@';
-    map.matrix[position.line][position.column] = '.';
+    move_in_the_map(&map, position.line, position.column, next_line, next_column);
     position.line = next_line;
     position.column = next_column;
 }

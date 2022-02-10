@@ -15,6 +15,7 @@ int main(){
         char command;
         scanf(" %c", &command);
         move(command);
+        ghosts();
     }while(!game_is_over());
     
     free_map(&map);
@@ -52,8 +53,27 @@ void move(char command){
     
     if(!next_position_is_valid(&map, next_line, next_column))
         return;
+    if(!next_position_is_not_wall(&map, next_line, next_column))
+        return;
     
     move_in_the_map(&map, position.line, position.column, next_line, next_column);
     position.line = next_line;
     position.column = next_column;
+}
+
+void ghosts(){
+    MAP copy;
+    copy_map(&copy, &map);
+
+    for(int line = 0; line < map.lines; line++){
+        for(int column = 0; column < map.columns; column++){
+            if(copy.matrix[line][column] == GHOST){
+                if(next_position_is_valid(&map, line, column + 1)
+                    && next_position_is_not_wall(&map, line, column + 1))
+                {
+                    move_in_the_map(&map, line, column, line, column + 1);
+                }
+            }
+        }
+    }
 }

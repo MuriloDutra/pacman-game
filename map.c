@@ -1,6 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "map.h"
+
+void copy_map(MAP* new_map, MAP* origin_map){
+    new_map->lines = origin_map->lines;
+    new_map->columns = origin_map->columns;
+    
+    allocate_map(new_map);
+    for(int line = 0; line < origin_map->lines; line++){
+        strcpy(new_map->matrix[line], origin_map->matrix[line]);
+    }
+    free_map(new_map);
+}
 
 void move_in_the_map(MAP* map, int origin_line, int origin_column, int next_line, int next_column){
     char character = map->matrix[origin_line][origin_column];
@@ -8,12 +20,14 @@ void move_in_the_map(MAP* map, int origin_line, int origin_column, int next_line
     map->matrix[origin_line][origin_column] = EMPTY;
 }
 
+int next_position_is_not_wall(MAP* map, int line, int column){
+    return (map->matrix[line][column] == EMPTY);
+}
+
 int next_position_is_valid(MAP* map, int line, int column){
     if(line >= map->lines)
         return 0;
     if(column >= map->columns)
-        return 0;
-    if(map->matrix[line][column] != EMPTY)
         return 0;
     return 1;
 }

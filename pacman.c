@@ -24,28 +24,40 @@ int game_is_over(){
     return 0;
 }
 
+int is_a_valid_command(char command){
+    return (command == 'w' || command == 'a' || command == 's' || command == 'd');
+}
+
 void move(char command){
-    int invalidCommand = (command != 'w' && command != 'a' && command != 's' && command != 'd');
-    if(invalidCommand)
+    if(!is_a_valid_command(command))
         return;
 
-    map.matrix[position.line][position.column] = '.';
+    int next_line = position.line;
+    int next_column = position.column;
+
     switch(command){
         case 'w': //UP
-            map.matrix[position.line - 1][position.column] = '@';
-            position.line--;
+            next_line--;
             break;
         case 'a': //LEFT
-            map.matrix[position.line][position.column - 1] = '@';
-            position.column--;
+            next_column--;
             break;
         case 's': //DOWN
-            map.matrix[position.line + 1][position.column] = '@';
-            position.line++;
+            next_line++;
             break;
         case 'd': //RIGHT
-            map.matrix[position.line][position.column + 1] = '@';
-            position.column++;
+            next_column++;
             break;
     }
+    if(next_line >= map.lines)
+        return;
+    if(next_column >= map.columns)
+        return;
+    if(map.matrix[next_line][next_column] != '.')
+        return;
+    
+    map.matrix[next_line][next_column] = '@';
+    map.matrix[position.line][position.column] = '.';
+    position.line = next_line;
+    position.column = next_column;
 }

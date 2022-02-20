@@ -6,16 +6,20 @@
 
 MAP map;
 POSITION position;
-
+int has_pill = 0;
+ 
 int main(){
     read_map(&map);
     find_character_in_map(&map, &position, HERO);
 
     do{
+        printf("PILLS: %s\n", has_pill ? "yes" : "no");
         print_map(&map);
         char command;
         scanf(" %c", &command);
         move(command);
+        if(command == BOMB)
+            blow_up();
         ghosts();
     }while(!game_is_over());
     
@@ -55,7 +59,10 @@ void move(char command){
 
     if(!able_to_move(&map, HERO, next_line, next_column))
         return;
-    
+    if(next_position_is_character(&map, PILL, next_line, next_column)){
+        has_pill = 1;
+    }
+
     move_in_the_map(&map, position.line, position.column, next_line, next_column);
     position.line = next_line;
     position.column = next_column;
@@ -99,4 +106,14 @@ int move_ghosts(int current_x, int current_y, int* x_destiny, int* y_destiny){
     }
 
     return 0;
+}
+
+void blow_up(){
+    for(int column = 1; column <= 3; column++){
+        if(next_position_is_valid(&map, position.line, position.column + column)){
+            if(next_position_is_wall(&map, position.line, position.column + column))
+                break;
+            map.matrix[position.line][position.column + column] = EMPTY;
+        }
+    }
 }

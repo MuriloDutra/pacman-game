@@ -9,7 +9,7 @@ POSITION position;
 
 int main(){
     read_map(&map);
-    find_character_in_map(&map, &position);
+    find_character_in_map(&map, &position, HERO);
 
     do{
         print_map(&map);
@@ -23,7 +23,8 @@ int main(){
 }
 
 int game_is_over(){
-    return 0;
+    POSITION aux;
+    return !find_character_in_map(&map, &aux, HERO);
 }
 
 int is_a_valid_command(char command){
@@ -52,7 +53,7 @@ void move(char command){
             break;
     }
 
-    if(!able_to_move(&map, next_line, next_column))
+    if(!able_to_move(&map, HERO, next_line, next_column))
         return;
     
     move_in_the_map(&map, position.line, position.column, next_line, next_column);
@@ -90,7 +91,7 @@ int move_ghosts(int current_x, int current_y, int* x_destiny, int* y_destiny){
     srand(time(0));
     for(int i = 0; i < 10; i++){
         int position = rand() % 4;
-        if(able_to_move(&map, move_options[position][0], move_options[position][1])){
+        if(able_to_move(&map, GHOST, move_options[position][0], move_options[position][1])){
             *x_destiny = move_options[position][0];
             *y_destiny = move_options[position][1];
             return 1;

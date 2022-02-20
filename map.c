@@ -20,14 +20,15 @@ void move_in_the_map(MAP* map, int origin_line, int origin_column, int next_line
     map->matrix[origin_line][origin_column] = EMPTY;
 }
 
-int able_to_move(MAP* map, int line, int column){
+int able_to_move(MAP* map, char character, int line, int column){
     return (
-        next_position_is_not_wall(map, line, column) &&
-        next_position_is_valid(map, line, column)
+        next_position_is_valid(map, line, column) &&
+        !next_position_is_wall(map, line, column) &&
+        !next_position_is_character(map, character, line, column)
     );
 }
 
-int next_position_is_not_wall(MAP* map, int line, int column){
+int next_position_is_empty(MAP* map, int line, int column){
     return (map->matrix[line][column] == EMPTY);
 }
 
@@ -37,6 +38,17 @@ int next_position_is_valid(MAP* map, int line, int column){
     if(column >= map->columns)
         return 0;
     return 1;
+}
+
+int next_position_is_wall(MAP* map, int line, int column){
+    return (
+        map->matrix[line][column] == HORIZONTAL_WALL ||
+        map->matrix[line][column] == VERTICAL_WALL
+    );
+}
+
+int next_position_is_character(MAP* map, char character, int line, int column){
+    return (map->matrix[line][column] == character);
 }
 
 void read_map(MAP* map){
@@ -76,13 +88,15 @@ void print_map(MAP* map){
     }
 }
 
-void find_character_in_map(MAP* map, POSITION* position){
+int find_character_in_map(MAP* map, POSITION* position, char letter){
     for(int line = 0; line < map->lines; line++){
         for(int column = 0; column < map->columns; column++){
-            if(map->matrix[line][column] == HERO){
+            if(map->matrix[line][column] == letter){
                 position->line = line;
                 position->column = column;
+                return 1;
             }
         }
     }
+    return 0;
 }

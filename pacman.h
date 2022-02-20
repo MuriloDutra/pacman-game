@@ -8,3 +8,4 @@ void find_character(int* x, int* y);
 void move(char command);
 int is_a_valid_command(char command);
 void ghosts();
+int move_ghosts(int current_x, int current_y, int* x_destiny, int* y_destiny);

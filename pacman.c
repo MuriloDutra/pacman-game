@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "pacman.h"
 #include "map.h"
 
@@ -50,10 +51,8 @@ void move(char command){
             next_column++;
             break;
     }
-    
-    if(!next_position_is_valid(&map, next_line, next_column))
-        return;
-    if(!next_position_is_not_wall(&map, next_line, next_column))
+
+    if(!able_to_move(&map, next_line, next_column))
         return;
     
     move_in_the_map(&map, position.line, position.column, next_line, next_column);
@@ -68,12 +67,35 @@ void ghosts(){
     for(int line = 0; line < map.lines; line++){
         for(int column = 0; column < map.columns; column++){
             if(copy.matrix[line][column] == GHOST){
-                if(next_position_is_valid(&map, line, column + 1)
-                    && next_position_is_not_wall(&map, line, column + 1))
-                {
-                    move_in_the_map(&map, line, column, line, column + 1);
+                int x_destiny;
+                int y_destiny;
+                int able_to_move_ghost = move_ghosts(line, column, &x_destiny, &y_destiny);
+
+                if(able_to_move_ghost){
+                    move_in_the_map(&map, line, column, x_destiny, y_destiny);
                 }
             }
         }
     }
+}
+
+int move_ghosts(int current_x, int current_y, int* x_destiny, int* y_destiny){
+    int move_options [4][2] = {
+        {current_x, current_y + 1},
+        {current_x + 1, current_y},
+        {current_x, current_y - 1},
+        {current_x - 1, current_y}
+    };
+
+    srand(time(0));
+    for(int i = 0; i < 10; i++){
+        int position = rand() % 4;
+        if(able_to_move(&map, move_options[position][0], move_options[position][1])){
+            *x_destiny = move_options[position][0];
+            *y_destiny = move_options[position][1];
+            return 1;
+        }
+    }
+
+    return 0;
 }

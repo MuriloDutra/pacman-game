@@ -20,6 +20,13 @@ void move_in_the_map(MAP* map, int origin_line, int origin_column, int next_line
     map->matrix[origin_line][origin_column] = EMPTY;
 }
 
+int able_to_move(MAP* map, int line, int column){
+    return (
+        next_position_is_not_wall(map, line, column) &&
+        next_position_is_valid(map, line, column)
+    );
+}
+
 int next_position_is_not_wall(MAP* map, int line, int column){
     return (map->matrix[line][column] == EMPTY);
 }

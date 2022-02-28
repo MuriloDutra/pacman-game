@@ -19,7 +19,7 @@ int main(){
         scanf(" %c", &command);
         move(command);
         if(command == BOMB)
-            blow_up(position.line, position.column, 3);
+            handle_bomb();
         ghosts();
     }while(!game_is_over());
     
@@ -108,9 +108,30 @@ int move_ghosts(int current_x, int current_y, int* x_destiny, int* y_destiny){
     return 0;
 }
 
-void blow_up(int line, int column, int quantity){
-    if(quantity == 0)
+void handle_bomb(){
+    if(!has_pill)
         return;
-    map.matrix[line][column + 1] = EMPTY;
-    blow_up(line, column + 1, quantity - 1);
+
+    blow_up(position.line, position.column, 0, 1, 3); //RIGHT
+    blow_up(position.line, position.column, 0, -1, 3); //LEFT
+    blow_up(position.line, position.column, 1, 0, 3); //DOWN
+    blow_up(position.line, position.column, -1, 0, 3); //UP
+
+    has_pill = 0;
+}
+
+void blow_up(int line, int column, int sum_line, int sum_column, int quantity){
+    if( quantity == 0)
+        return;
+
+    int new_line = line + sum_line;
+    int new_column = column + sum_column;
+
+    if(!next_position_is_valid(&map, new_line, new_column))
+        return;
+    if(next_position_is_wall(&map, new_line, new_column))
+        return;
+
+    map.matrix[new_line][new_column] = EMPTY;
+    blow_up(new_line, new_column, sum_line, sum_column, quantity - 1);
 }
